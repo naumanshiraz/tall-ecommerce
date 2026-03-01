@@ -1,0 +1,47 @@
+# Laravel
+/vendor/
+/node_modules/
+/public/storage
+/storage/*.key
+/storage/app/public
+/bootstrap/cache/*.php
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# IDE
+/.idea
+/.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+
+# Laravel Mix / Vite
+/public/build
+/public/hot
+
+# Logs
+/storage/logs/*.log
+
+# Docker
+docker-compose.override.yml
+
+# Sail
+/.env.sail
+
+# Misc
+*.log
