@@ -27,7 +27,7 @@ class Address extends Model
       return $this->belongsTo(Order::class);
     }
 
-    public function getFullNameAttibute()
+    public function getFullNameAttribute()
     {
       return "{$this->first_name} {$this->last_name}";
     }

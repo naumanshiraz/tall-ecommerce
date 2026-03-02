@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
+use App\Filament\Resources\OrderResource\RelationManagers\AddressRelationManager;
 use App\Models\Order;
 use App\Models\Product;
 use Filament\Forms;
@@ -89,14 +90,14 @@ class OrderResource extends Resource
                                 'cancelled' => 'heroicon-m-x-circle'
                             ]),    
 
-                        Select::make('currrency')
+                        Select::make('currency')
                             ->options([
                                 'pkr' => 'PKR',
                                 'usd' => 'USD',
                                 'eur' => 'EUR',
                                 'gbp' => 'GBP'
                             ])
-                            ->default('pkr')
+                            ->default('PKR')
                             ->required(),    
 
                         Select::make('shipping_method')
@@ -126,7 +127,7 @@ class OrderResource extends Resource
                                     ->reactive()
                                     ->afterStateUpdated(fn($state, Set $set) => $set('unit_amount', Product::find($state)?->price ?? 0 ))
                                     ->afterStateUpdated(fn($state, Set $set) => $set('total_amount', Product::find($state)?->price ?? 0 )),
-                                TextInput::make('quantty')
+                                TextInput::make('quantity')
                                     ->numeric()
                                     ->required()
                                     ->default(1)
@@ -190,10 +191,10 @@ class OrderResource extends Resource
                 TextColumn::make('payment_status')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('curreny')
+                TextColumn::make('currency')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('shippping_method')
+                TextColumn::make('shipping_method')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('created_at')
@@ -236,7 +237,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AddressRelationManager::class
         ];
     }
 
