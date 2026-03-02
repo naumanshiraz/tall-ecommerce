@@ -190,7 +190,8 @@ class OrderResource extends Resource
                     ->sortable(),
                 TextColumn::make('payment_status')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->badge(),
                 TextColumn::make('currency')
                     ->sortable()
                     ->searchable(),
