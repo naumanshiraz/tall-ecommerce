@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\UserResource\RelationManagers;
 
+use App\Models\Order;
 use App\Filament\Resources\OrderResource;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -62,7 +64,6 @@ class OrdersRelationManager extends RelationManager
                 TextColumn::make('created_at')
                     ->label('Order Date')
                     ->dateTime(),        
-
             ])
             ->filters([
                 //
@@ -74,7 +75,7 @@ class OrdersRelationManager extends RelationManager
                 Action::make('View Order')
                     ->url(fn (Order $record):string => OrderResource::getUrl('view', ['record' => $record]))
                     ->color('info')
-                    ->icon('heroicon-0-eye'),
+                    ->icon('heroicon-o-eye'),
                 Tables\Actions\DeleteAction::make()
                 
             ])
