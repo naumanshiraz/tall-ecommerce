@@ -18,7 +18,17 @@ class ProductsPage extends Component
     #[Url]
     public $selected_categories = []; 
 
+    #[Url]
     public $selected_brands = []; 
+
+    #[Url]
+    public $featured;
+
+    #[Url]
+    public $on_sale;
+
+    #[Url]
+    public $price_range = 100000;
 
     public function render()
     {
@@ -31,8 +41,22 @@ class ProductsPage extends Component
         if(!blank($this->selected_brands)) {
             $productQuery->whereIn('brand_id', $this->selected_brands);
         }
+
+        if($this->featured) {
+            $productQuery->where('is_featured', 1);
+        }
+
+        if($this->on_sale) {
+            $productQuery->where('on_sale', 1);
+        }
+
+        if($this->price_range) {
+            $productQuery->whereBetween('price', [0, $this->price_range]);
+        }
         
-        $categories = Category::where('is_active', 1)->get(['id', 'name', 'slug']);
+        $categories = Category::where('is_active', 1)
+            ->whereNotNull('parent_id')
+            ->get(['id', 'name', 'slug']);
         $brands = Brand::where('is_active', 1)
             ->whereNotNull('parent_id')
             ->get(['id', 'name', 'slug']);
