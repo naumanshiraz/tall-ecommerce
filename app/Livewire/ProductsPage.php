@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Helpers\CartManagement;
+use App\Livewire\Partials\Navbar;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
@@ -9,6 +11,7 @@ use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 
 #[Title('Products - TallCart')]
 class ProductsPage extends Component
@@ -28,10 +31,26 @@ class ProductsPage extends Component
     public $on_sale;
 
     #[Url]
-    public $price_range = 100000;
+    public $price_range = 1000000;
 
     #[Url]
     public $sort = 'latest';
+
+    // add product to cart method
+    public function addToCart($product_id)
+    {
+        $total_count = CartManagement::addItemToCart($product_id);
+
+        $this->dispatch('update-cart-count', total_count: $total_count)->to(Navbar::class);
+
+        LivewireAlert::title('Product Added')
+            ->text('Product has been added to the cart successfully.')
+            ->position('bottom-end')
+            ->timer(3000)
+            ->success()
+            ->toast()
+            ->show();
+    }
 
     public function render()
     {
@@ -66,14 +85,13 @@ class ProductsPage extends Component
         }
         
         $categories = Category::where('is_active', 1)
-            ->whereNotNull('parent_id')
             ->get(['id', 'name', 'slug']);
         $brands = Brand::where('is_active', 1)
             ->whereNotNull('parent_id')
             ->get(['id', 'name', 'slug']);
 
         return view('livewire.products-page', [
-            'products' => $productQuery->paginate(perPage: 12),
+            'products' => $productQuery->paginate(perPage: 9),
             'categories' => $categories,
             'brands' => $brands
         ]);
