@@ -22,7 +22,7 @@
             </p>
           </div>
           <div class="mt-1 flex items-center gap-x-2">
-            <div>Jace Grimes</div>
+            <div>{{ auth()->user()->name }}</div>
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@
           </div>
           <div class="mt-1 flex items-center gap-x-2">
             <h3 class="text-xl font-medium text-gray-800 dark:text-gray-200">
-              17-02-2024
+              {{ $order->created_at->format('d-m-Y') }}
             </h3>
           </div>
         </div>
@@ -74,7 +74,7 @@
             </p>
           </div>
           <div class="mt-1 flex items-center gap-x-2">
-            <span class="bg-yellow-500 py-1 px-3 rounded text-white shadow">Processing</span>
+            <span class="{{ $this->getStatusColor($order->status) }} py-1 px-3 rounded text-white shadow">{{ ucfirst($order->status) }}</span>
           </div>
         </div>
       </div>
@@ -100,7 +100,7 @@
             </p>
           </div>
           <div class="mt-1 flex items-center gap-x-2">
-            <span class="bg-green-500 py-1 px-3 rounded text-white shadow">Paid</span>
+            <span class="{{ $this->getPaymentStatusColor($order->payment_status) }} py-1 px-3 rounded text-white shadow">{{ ucfirst($order->payment_status) }}</span>
           </div>
         </div>
       </div>
@@ -122,36 +122,33 @@
             </tr>
           </thead>
           <tbody>
+            @foreach ($order->items as $item)
+              <!--[if BLOCK]><![endif]-->
+              <tr wire:key="{{ $item->id }}">
+                <td class="py-4">
+                  <div class="flex items-center">
+                    <img class="h-16 w-16 mr-4" src="{{ url('storage', $item->product->images[0])}}" alt="{{ $item->name }}">
+                    <div class="relative group max-w-[200px]">
+                        <span class="block truncate cursor-pointer">
+                            {{ $item->product->name }}
+                        </span>
 
-            <!--[if BLOCK]><![endif]-->
-            <tr wire:key="53">
-              <td class="py-4">
-                <div class="flex items-center">
-                  <img class="h-16 w-16 mr-4" src="http://localhost:8000/storage/products/01HND3J5XS7ZC5J84BK5YDM6Z2.jpg" alt="Product image">
-                  <span class="font-semibold">Samsung Galaxy Watch6</span>
-                </div>
-              </td>
-              <td class="py-4">₹29,999.00</td>
-              <td class="py-4">
-                <span class="text-center w-8">1</span>
-              </td>
-              <td class="py-4">₹29,999.00</td>
-            </tr>
-            <tr wire:key="54">
-              <td class="py-4">
-                <div class="flex items-center">
-                  <img class="h-16 w-16 mr-4" src="http://localhost:8000/storage/products/01HND30J0P7C6MWQ1XQK7YDQKA.jpg" alt="Product image">
-                  <span class="font-semibold">Samsung Galaxy Book3</span>
-                </div>
-              </td>
-              <td class="py-4">₹75,000.00</td>
-              <td class="py-4">
-                <span class="text-center w-8">5</span>
-              </td>
-              <td class="py-4">₹375,000.00</td>
-            </tr>
-            <!--[if ENDBLOCK]><![endif]-->
-
+                        <div class="absolute left-0 bottom-full mb-2 hidden group-hover:block 
+                                    bg-gray-900 text-white text-xs rounded px-2 py-1 
+                                    whitespace-wrap z-10 max-w-[250px]">
+                            {{ $item->product->name }}
+                        </div>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-4">{{ Number::currency($item->unit_amount, 'PKR') }}</td>
+                <td class="py-4">
+                  <span class="text-center w-8">{{ $item->quantity }}</span>
+                </td>
+                <td class="py-4">{{ Number::currency($item->total_amount, 'PKR') }}</td>
+              </tr>
+              <!--[if ENDBLOCK]><![endif]-->
+            @endforeach
           </tbody>
         </table>
       </div>
@@ -160,11 +157,10 @@
         <h1 class="font-3xl font-bold text-slate-500 mb-3">Shipping Address</h1>
         <div class="flex justify-between items-center">
           <div>
-            <p>42227 Zoila Glens, Oshkosh, Michigan, 55928</p>
+            <p>{{ $order->address->address }}, {{ $order->address->city }}, {{ $order->address->status }}, {{ $order->address->country }}, {{ $order->address->zip_code }}</p>
           </div>
           <div>
-            <p class="font-semibold">Phone:</p>
-            <p>023-509-0009</p>
+            <p class="font-semibold">Phone: <span class="font-normal">{{ $order->address->phone }}</span></p>
           </div>
         </div>
       </div>
@@ -175,22 +171,21 @@
         <h2 class="text-lg font-semibold mb-4">Summary</h2>
         <div class="flex justify-between mb-2">
           <span>Subtotal</span>
-          <span>₹404,999.00</span>
+          <span>{{ Number::currency($order->grand_total, 'PKR') }}</span>
         </div>
         <div class="flex justify-between mb-2">
           <span>Taxes</span>
-          <span>₹0.00</span>
+          <span>{{ Number::currency(0, 'PKR') }}</span>
         </div>
         <div class="flex justify-between mb-2">
           <span>Shipping</span>
-          <span>₹0.00</span>
+          <span>{{ Number::currency(0, 'PKR') }}</span>
         </div>
         <hr class="my-2">
         <div class="flex justify-between mb-2">
           <span class="font-semibold">Grand Total</span>
-          <span class="font-semibold">₹404,999.00</span>
+          <span class="font-semibold">{{ Number::currency($order->grand_total, 'PKR') }}</span>
         </div>
-
       </div>
     </div>
   </div>
